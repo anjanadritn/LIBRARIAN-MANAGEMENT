@@ -1,0 +1,293 @@
+Data Structures:
+
+    books Dictionary: Stores information about books in different sections (e.g., Computer Science, Mechanical Engineering). Each section contains a list of dictionaries where each dictionary represents a book with its title and the number of copies available.
+
+    students Dictionary: Stores information about each student including their borrowed books and their borrowing history. The keys are student USNs (Unique Student Numbers), and the values are dictionaries that contain:
+        borrowed_books: A list of books currently borrowed by the student.
+        history: A list of all borrowing history records.
+
+    librarian_password: A constant string used to authenticate the librarian.
+
+Functions
+
+    student_login: Handles the student login process. It allows students to:
+        Show All Books: Displays all available books in each section.
+        Borrow Book: Allows students to borrow a book if it is available.
+        Return Book: Allows students to return a borrowed book.
+        View Borrow History: Shows a history of books borrowed by the student.
+
+    librarian_login: Handles the librarian login process. If the librarian enters the correct password, they can:
+        Show All Books: Displays all books in each section.
+        View Student Borrow History: Allows viewing the borrowing history of a specific student.
+
+    show_all_books: Displays all books in each section along with the number of copies available.
+
+    borrow_book: Manages the borrowing of a book by a student. It:
+        Checks if the section and book exist.
+        Verifies if copies are available.
+        Updates the number of copies and records the borrowing information (borrow time and due date).
+        Checks if more than 20 copies are available and prompts the student to buy the book if true.
+
+    return_book: Manages the return of a borrowed book. It:
+        Checks if the student has borrowed the book.
+        Updates the book’s availability and calculates any overdue charges.
+        Updates the borrowing history to reflect the return.
+
+    view_borrow_history: Displays the borrowing history of a student, including whether each book has been returned or not.
+
+    main: The main loop of the program. It:
+        Presents a menu to either log in as a student, as a librarian, or exit the system.
+        Calls appropriate functions based on user choice.
+
+Key Points
+
+    Case Insensitivity: The code uses .lower() to handle case insensitivity for book titles and section names, ensuring that user input is compared in a uniform way.
+    Borrow Duration: Books are borrowed for a period of 3 days. If a book is returned late, overdue charges are calculated.
+    User Interaction: The program interacts with the user via the command line, asking for inputs and providing feedback based on those inputs.
+
+Example Workflow
+
+    Student Logs In:
+        The student can view books, borrow or return books, and check their borrowing history.
+    Librarian Logs In:
+        The librarian can view all books and check the borrowing history of any student.
+
+This code provides a basic yet functional library management system, which could be expanded with features like fines management, more advanced search capabilities, or user authentication.
+
+PYTHON CODE:
+
+from datetime import datetime, timedelta
+
+# Data structures to store information
+books = {
+    'Computer Science': [
+        {'title': 'Introduction to Algorithms', 'copies': 15},
+        {'title': 'Artificial Intelligence: A Modern Approach', 'copies': 25},
+        {'title': 'Computer Networks', 'copies': 34},
+        {'title': 'Operating System Concepts', 'copies': 19},
+        {'title': 'Structure and Interpretation of Computer Programs', 'copies': 13},
+        {'title': 'The C Programming Language', 'copies': 11},
+        {'title': 'Computer Organization and Design: The Hardware/Software Interface', 'copies': 22},
+        {'title': 'Compilers: Principles, Techniques, and Tools', 'copies': 17},
+        {'title': 'Introduction to the Theory of Computation', 'copies': 34},
+        {'title': 'Database System Concepts', 'copies': 8}
+    ],
+    'Mechanical Engineering': [
+        {'title': 'Engineering Mechanics', 'copies': 10},
+        {'title': 'Thermodynamics', 'copies': 5},
+        {'title': 'Engineering Mechanics: Statics', 'copies': 11},
+        {'title': 'Engineering Mechanics: Dynamics', 'copies': 9},
+        {'title': 'Mechanical Engineering Design', 'copies': 33},
+        {'title': 'Fundamentals of Thermodynamics', 'copies': 23},
+        {'title': 'Introduction to Fluid Mechanics', 'copies': 32},
+        {'title': 'Materials Science and Engineering: An Introduction', 'copies': 1},
+        {'title': 'Heat Transfer', 'copies': 17},
+        {'title': 'Manufacturing Engineering and Technology', 'copies': 27}
+    ],
+    'Information Science': [
+        {'title': 'Data Structures and Algorithms', 'copies': 8},
+        {'title': 'Database System Concepts', 'copies': 3},
+        {'title': 'Introduction to Information Retrieval', 'copies': 13},
+        {'title': 'Modern Information Retrieval: The Concepts and Technology behind Search', 'copies': 18},
+        {'title': 'Database System Concepts', 'copies': 32},
+        {'title': 'Data Management for Researchers: Organize, Maintain and Share Your Data for Research Success', 'copies': 8},
+        {'title': 'Information Storage and Retrieval Systems: Theory and Implementation', 'copies': 1},
+        {'title': 'The Information: A History, a Theory, a Flood', 'copies': 32},
+        {'title': 'Introduction to Data Science: Data Analysis and Prediction Algorithms with R', 'copies': 23},
+        {'title': 'Handbook of Information Science', 'copies': 32}
+    ],
+    'Artificial Intelligence': [
+        {'title': 'Machine Learning', 'copies': 7},
+        {'title': 'Deep Learning', 'copies': 2},
+        {'title': 'Artificial Intelligence: A Modern Approach', 'copies': 21},
+        {'title': 'Pattern Recognition and Machine Learning', 'copies': 22},
+        {'title': 'Machine Learning: A Probabilistic Perspective', 'copies': 18},
+        {'title': 'Natural Language Processing with Python', 'copies': 11},
+        {'title': 'Reinforcement Learning: An Introduction', 'copies': 11},
+        {'title': 'Artificial Intelligence for Humans', 'copies': 11},
+        {'title': 'Introduction to Machine Learning with Python: A Guide for Data Scientists', 'copies': 32},
+        {'title': 'Foundations of Machine Learning', 'copies': 12},
+        {'title': 'Hands-On Machine Learning with Scikit-Learn, Keras, and TensorFlow', 'copies': 20}
+    ],
+    'Electrical Engineering': [
+        {'title': 'Circuit Analysis', 'copies': 10},
+        {'title': 'Electromagnetics', 'copies': 15},
+        {'title': 'Fundamentals of Electric Circuits', 'copies': 12},
+        {'title': 'Electrical Engineering', 'copies': 23},
+        {'title': 'Control Systems Engineering', 'copies': 2},
+        {'title': 'Power System Analysis and Design', 'copies': 9},
+        {'title': 'Digital Design and Computer Architecture', 'copies': 16},
+        {'title': 'Signals and Systems', 'copies': 16},
+        {'title': 'Communication Systems', 'copies': 11},
+        {'title': 'Electromagnetic Fields and Waves', 'copies': 3}
+    ],
+    'Robotics Engineering': [
+        {'title': 'Introduction to Robotics', 'copies': 6},
+        {'title': 'Robotics: Control and Sensing', 'copies': 4},
+        {'title': 'Introduction to Autonomous Robots: Mechanisms, Sensors, Actuators, and Algorithms', 'copies': 9},
+        {'title': 'Robotics: Modelling, Planning, and Control', 'copies': 7},
+        {'title': 'Robotics: Principles and Practice', 'copies': 9},
+        {'title': 'Robot Operating System (ROS)', 'copies': 12},
+        {'title': 'Robotics: State of the Art and Future Challenges', 'copies': 11},
+        {'title': 'Modern Robotics: Mechanics, Planning, and Control', 'copies': 12},
+        {'title': 'Introduction to Robotics: Analysis, Control, Applications', 'copies': 43},
+        {'title': 'Hands-On Robotics with Arduino: Build and Program Your Own Robots Using Arduino', 'copies': 13}
+    ]
+}
+
+
+students = {}
+librarian_password = 'admin123'
+
+def student_login():
+    print("Student Login")
+    student_id = input("Enter Student USN: ")
+    if student_id not in students:
+        students[student_id] = {'borrowed_books': [], 'history': []}
+
+    while True:
+        print("\n1. Show All Books")
+        print("2. Borrow Book")
+        print("3. Return Book")
+        print("4. View Borrow History")
+        print("5. Logout")
+        choice = input("Enter choice: ")
+
+        if choice == '1':
+            show_all_books()
+        elif choice == '2':
+            borrow_book(student_id)
+        elif choice == '3':
+            return_book(student_id)
+        elif choice == '4':
+            view_borrow_history(student_id)
+        elif choice == '5':
+            break
+        else:
+            print("Invalid choice, please try again.")
+
+def librarian_login():
+    password = input("Enter Librarian Password: ")
+    if password == librarian_password:
+        while True:
+            print("\nLibrarian Menu")
+            print("1. Show All Books")
+            print("2. View Student Borrow History")
+            print("3. Logout")
+            choice = input("Enter choice: ")
+
+            if choice == '1':
+                show_all_books()
+            elif choice == '2':
+                student_id = input("Enter Student USN : ")
+                if student_id in students:
+                    view_borrow_history(student_id)
+                else:
+                    print("Student not barrow any kind of books.")
+            elif choice == '3':
+                break
+            else:
+                print("Invalid choice, please try again.")
+    else:
+        print("Incorrect password.")
+
+def show_all_books():
+    print("\nLibrary Books:")
+    for section, books_list in books.items():
+        print(f"\n{section}:")
+        for book in books_list:
+            print(f"  {book['title']} - Copies: {book['copies']}")
+
+def borrow_book(student_id):
+    section = input("Enter the section name: ").lower()  # Convert input to lowercase
+    if section in [s.lower() for s in books.keys()]:  # Check in lowercase
+        title = input("Enter the book title: ").lower()  # Convert input to lowercase
+        for book in books[[s for s in books.keys() if s.lower() == section][0]]:  # Find the section
+            if book['title'].lower() == title:  # Compare book title in lowercase
+                if book['copies'] > 0:
+                    if book['copies'] > 20:
+                        print("More than 20 copies available, you need to buy this book.")
+                    else:
+                        book['copies'] -= 1
+                        borrow_time = datetime.now()
+                        due_time = borrow_time + timedelta(days=3)
+                        students[student_id]['borrowed_books'].append({
+                            'title': book['title'],  # Store the original case
+                            'section': section.title(),  # Store section name in title case
+                            'borrow_time': borrow_time,
+                            'due_time': due_time
+                        })
+                        students[student_id]['history'].append({
+                            'title': book['title'],
+                            'section': section.title(),
+                            'borrow_time': borrow_time,
+                            'due_time': due_time,
+                            'returned': False
+                        })
+                        print(f"You have borrowed this book  '{book['title']}'. you should return this book within {due_time}.")
+                else:
+                    print("Book is not available.")
+                return
+        print("Book not found.")
+    else:
+        print("Section not found.")
+
+def return_book(student_id):
+    title = input("Enter the title of the book which you want to return: ").lower()  # Convert input to lowercase
+    borrowed_books = students[student_id]['borrowed_books']
+
+    for book in borrowed_books:
+        if book['title'].lower() == title:  # Compare book title in lowercase
+            borrowed_books.remove(book)
+            section = book['section'].lower()  # Convert section name to lowercase
+            for lib_book in books[[s for s in books.keys() if s.lower() == section][0]]:
+                if lib_book['title'].lower() == title:  # Compare title in lowercase
+                    lib_book['copies'] += 1
+                    break
+
+            return_time = datetime.now()
+            overdue_days = (return_time - book['due_time']).days
+            if overdue_days > 0:
+                charges = overdue_days * 500
+                print(f"Book returned late by {overdue_days} days. Overdue charges: {charges} rupees.")
+            else:
+                print("Book returned on time.")
+
+            for history_entry in students[student_id]['history']:
+                if history_entry['title'].lower() == title and not history_entry['returned']:
+                    history_entry['returned'] = True
+                    history_entry['return_time'] = return_time
+                    break
+            return
+    print("You have not. borrowed this book.")
+
+
+def view_borrow_history(student_id):
+    print("\nBorrow History:")
+    history = students[student_id]['history']
+    if history:
+        for entry in history:
+            status = "Returned" if entry.get('returned', False) else "Not Returned"
+            print(f"{entry['title']} (Section: {entry['section']}) - Borrowed on {entry['borrow_time']}, Due on {entry['due_time']} - {status}")
+    else:
+        print("Not borrowed any kind of books.")
+
+def main():
+    while True:
+        print("\nLibrary Management System")
+        print("1. Student Login")
+        print("2. Librarian Login")
+        print("3. Exit")
+        choice = input("Enter choice: ")
+
+        if choice == '1':
+            student_login()
+        elif choice == '2':
+            librarian_login()
+        elif choice == '3':
+            break
+        else:
+            print("Invalid choice, please try again.")
+
+if __name__ == "__main__":
+    main()
