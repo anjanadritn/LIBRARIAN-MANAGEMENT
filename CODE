@@ -1,59 +1,3 @@
-Data Structures:
-
-    books Dictionary: Stores information about books in different sections (e.g., Computer Science, Mechanical Engineering). Each section contains a list of dictionaries where each dictionary represents a book with its title and the number of copies available.
-
-    students Dictionary: Stores information about each student including their borrowed books and their borrowing history. The keys are student USNs (Unique Student Numbers), and the values are dictionaries that contain:
-        borrowed_books: A list of books currently borrowed by the student.
-        history: A list of all borrowing history records.
-
-    librarian_password: A constant string used to authenticate the librarian.
-
-Functions
-
-    student_login: Handles the student login process. It allows students to:
-        Show All Books: Displays all available books in each section.
-        Borrow Book: Allows students to borrow a book if it is available.
-        Return Book: Allows students to return a borrowed book.
-        View Borrow History: Shows a history of books borrowed by the student.
-
-    librarian_login: Handles the librarian login process. If the librarian enters the correct password, they can:
-        Show All Books: Displays all books in each section.
-        View Student Borrow History: Allows viewing the borrowing history of a specific student.
-
-    show_all_books: Displays all books in each section along with the number of copies available.
-
-    borrow_book: Manages the borrowing of a book by a student. It:
-        Checks if the section and book exist.
-        Verifies if copies are available.
-        Updates the number of copies and records the borrowing information (borrow time and due date).
-        Checks if more than 20 copies are available and prompts the student to buy the book if true.
-
-    return_book: Manages the return of a borrowed book. It:
-        Checks if the student has borrowed the book.
-        Updates the book’s availability and calculates any overdue charges.
-        Updates the borrowing history to reflect the return.
-
-    view_borrow_history: Displays the borrowing history of a student, including whether each book has been returned or not.
-
-    main: The main loop of the program. It:
-        Presents a menu to either log in as a student, as a librarian, or exit the system.
-        Calls appropriate functions based on user choice.
-
-Key Points
-
-    Case Insensitivity: The code uses .lower() to handle case insensitivity for book titles and section names, ensuring that user input is compared in a uniform way.
-    Borrow Duration: Books are borrowed for a period of 3 days. If a book is returned late, overdue charges are calculated.
-    User Interaction: The program interacts with the user via the command line, asking for inputs and providing feedback based on those inputs.
-
-Example Workflow
-
-    Student Logs In:
-        The student can view books, borrow or return books, and check their borrowing history.
-    Librarian Logs In:
-        The librarian can view all books and check the borrowing history of any student.
-
-This code provides a basic yet functional library management system, which could be expanded with features like fines management, more advanced search capabilities, or user authentication.
-
 PYTHON CODE:
 
 from datetime import datetime, timedelta
@@ -291,3 +235,63 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
+
+
+Data Structures
+
+    books Dictionary: Stores information about books in different sections (e.g., Computer Science, Mechanical Engineering). Each section contains a list of dictionaries where each dictionary represents a book with its title and the number of copies available.
+
+    students Dictionary: Stores information about each student including their borrowed books and their borrowing history. The keys are student USNs (Unique Student Numbers), and the values are dictionaries that contain:
+        borrowed_books: A list of books currently borrowed by the student.
+        history: A list of all borrowing history records.
+
+    librarian_password: A constant string used to authenticate the librarian.
+
+Functions
+
+    student_login: Handles the student login process. It allows students to:
+        Show All Books: Displays all available books in each section.
+        Borrow Book: Allows students to borrow a book if it is available.
+        Return Book: Allows students to return a borrowed book.
+        View Borrow History: Shows a history of books borrowed by the student.
+
+    librarian_login: Handles the librarian login process. If the librarian enters the correct password, they can:
+        Show All Books: Displays all books in each section.
+        View Student Borrow History: Allows viewing the borrowing history of a specific student.
+
+    show_all_books: Displays all books in each section along with the number of copies available.
+
+    borrow_book: Manages the borrowing of a book by a student. It:
+        Checks if the section and book exist.
+        Verifies if copies are available.
+        Updates the number of copies and records the borrowing information (borrow time and due date).
+        Checks if more than 20 copies are available and prompts the student to buy the book if true.
+
+    return_book: Manages the return of a borrowed book. It:
+        Checks if the student has borrowed the book.
+        Updates the book’s availability and calculates any overdue charges.
+        Updates the borrowing history to reflect the return.
+
+    view_borrow_history: Displays the borrowing history of a student, including whether each book has been returned or not.
+
+    main: The main loop of the program. It:
+        Presents a menu to either log in as a student, as a librarian, or exit the system.
+        Calls appropriate functions based on user choice.
+
+Key Points
+
+    Case Insensitivity: The code uses .lower() to handle case insensitivity for book titles and section names, ensuring that user input is compared in a uniform way.
+    Borrow Duration: Books are borrowed for a period of 3 days. If a book is returned late, overdue charges are calculated.
+    User Interaction: The program interacts with the user via the command line, asking for inputs and providing feedback based on those inputs.
+
+Example Workflow
+
+    Student Logs In:
+        The student can view books, borrow or return books, and check their borrowing history.
+    Librarian Logs In:
+        The librarian can view all books and check the borrowing history of any student.
+
+This code provides a basic yet functional library management system, which could be expanded with features like fines management, more advanced search capabilities, or user authentication.
+
